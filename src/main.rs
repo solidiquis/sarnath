@@ -1,6 +1,5 @@
 mod errors;
 mod event;
-mod tests;
 mod fswatch;
 mod signals;
 
@@ -10,6 +9,9 @@ use event::Event;
 use fswatch::FsWatch;
 use std::thread;
 use std::sync::mpsc;
+
+#[cfg(test)]
+mod tests;
 
 const APP_NAME: &'static str = "Sarnath";
 const VERSION: &'static str = "0.1.0";
