@@ -63,7 +63,7 @@ impl Event {
         &mut self,
         proc_proceed_tx: Sender<Signal>,
         proc_id_rx: Receiver<u32>,
-        fsmod_rx: Receiver<Signal>
+        fsmod_rx: Receiver<Signal>,
         )
     {
         proc_proceed_tx.send(Signal::ProcProceed).unwrap();
