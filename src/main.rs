@@ -1,5 +1,6 @@
 mod errors;
 mod event;
+mod tests;
 mod fswatch;
 mod signals;
 
@@ -14,7 +15,8 @@ const APP_NAME: &'static str = "Sarnath";
 const VERSION: &'static str = "0.1.0";
 const AUTHOR: &'static str = "Benjamin Nguyen <benjamin.van.nguyen@gmail.com>";
 const ABOUT: &'static str = "
-About the program.
+Monitors changes in specified directory and kills and re-executes child process.
+Hook in custom command to execute on changes as well.
 ";
 
 fn main() {
@@ -38,14 +40,17 @@ fn main() {
             .short("p")
             .long("proc")
             .takes_value(true)
-            .help("Process to rebuild upon file change.")
+            .help("Command to boot process that is killed and restarted on-change.")
             )
         .get_matches();
 
-    let dirpath = matches.value_of("directory").unwrap_or(".").clone().to_string();
+    let dirpath = match matches.value_of("directory") {
+        None => ".",
+        Some(d) => d
+    };
 
     let cmd = match matches.value_of("command") {
-        None => panic!("{}", Error::MissingArg(String::from("cmd"))),
+        None => ":",
         Some(c) => c 
     };
 
@@ -61,7 +66,7 @@ fn main() {
     let (proc_id_tx, proc_id_rx) = mpsc::channel();
     let (proc_proceed_tx, proc_proceed_rx) = mpsc::channel();
 
-    let mut fs_watch = match FsWatch::new(dirpath, fsmod_tx.clone()) {
+    let mut fs_watch = match FsWatch::new(String::from(dirpath), fsmod_tx.clone()) {
         Ok(f) => f,
         Err(e) => panic!("Failed to initialize FsWatch with error: {}", e)
     };
@@ -90,3 +95,4 @@ fn main() {
         t.join().unwrap()
     } 
 }
+
