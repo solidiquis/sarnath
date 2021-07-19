@@ -21,7 +21,7 @@ done
 
 `onchange.sh`
 ```bash
-  echo "File change detected.
+echo "File change detected.
 ```
 
 Sarnath can be executed via:
